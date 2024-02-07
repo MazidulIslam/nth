@@ -9,9 +9,9 @@ export default function SingularSelect({
   placeholder,
   header,
   disabled,
-  ...rest
+  ...props
 }) {
-  const [field, meta] = useField(rest);
+  const [field, meta] = useField(props);
   return (
     <div style={{ marginBottom: '1rem' }}>
       {header && (

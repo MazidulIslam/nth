@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Header from '../../../components/header';
 import { useSession } from 'next-auth/react';
-import { Form, Formik } from 'formik/dist';
+import * as Yup from 'yup';
+import { Field, Form, Formik } from 'formik/dist';
 import AdminInput from '../../../components/inputs/adminInput';
 import SingularSelect from '../../../components/selects/SingularSelect';
 import tempData from '../../../tempData';
@@ -138,7 +139,10 @@ export default function AddTopic({ country }) {
       {session && (
         <>
           <Header country={country} />
-          <div className={styles.header}>Create Product</div>
+          <div //className={styles.header}
+          >
+            Create Product
+          </div>
           <Formik
             enableReinitialize
             initialValues={{
@@ -161,14 +165,32 @@ export default function AddTopic({ country }) {
           >
             {(formik) => (
               <Form>
-                <SingularSelect
+                <Field type="email" name="email" placeholder="Email" />
+                <Field as="select" name="color">
+                  <option value="red">Red</option>
+                  <option value="green">Green</option>
+                  <option value="blue">Blue</option>
+                </Field>
+
+                {/* <SingularSelect
+                  data={tempData.memberName}
+                  handleChange={handleChange}
+                  placeholder="Name"
+                  header="Select Name"
+                  disabled={true}
                   name="member"
                   value={tempData.memberName[0]}
-                  placeholder="Name"
-                  data={tempData.memberName}
-                  header="Select Name"
+                /> */}
+
+                {/* <SingularSelect
+                  name="category"
+                  value={'productcategory'}
+                  placeholder="Category"
+                  data={'categories'}
+                  header="Select a Category"
                   handleChange={handleChange}
-                />
+                  disabled={true}
+                /> */}
 
                 {/* <AdminInput
                   type="text"
@@ -220,7 +242,7 @@ export default function AddTopic({ country }) {
           
             */}
                 <button
-                  className={`${styles.btn} ${styles.btn__primary} ${styles.submit_btn}`}
+                  //className={`${styles.btn} ${styles.btn__primary} ${styles.submit_btn}`}
                   type="submit"
                 >
                   Create Product
