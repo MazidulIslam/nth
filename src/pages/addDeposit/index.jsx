@@ -9,14 +9,17 @@ import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik/dist';
 import AdminInput from '../../../components/inputs/adminInput';
 import SingularSelect from '../../../components/selects/SingularSelect';
-import tempData from '../../../tempData';
+import members from '../../../data/members';
+import months from '../../../data/month';
+import paymentMethod from '../../../data/payment_method';
 
 const initialState = {
   name: '',
-  description: '',
-  brand: '',
-  sku: '',
-  discount: 0,
+  month: '',
+  amount: '',
+  payment_method: '',
+  transaction_id: '',
+  is_approved: 0,
 };
 
 export default function AddTopic({ country }) {
@@ -46,58 +49,35 @@ export default function AddTopic({ country }) {
     description: Yup.string().required('Please add a description'),
   });
   const createProduct = async () => {
-    let test = validateCreateProduct(product, images);
-    if (test == 'valid') {
-      createProductHandler();
-    } else {
-      dispatch(
-        showDialog({
-          header: 'Please follow our instructions.',
-          msgs: test,
-        })
-      );
-    }
+    // let test = validateCreateProduct(product, images);
+    // if (test == 'valid') {
+    createProductHandler();
+    // } else {
+    //   dispatch(
+    //     showDialog({
+    //       header: 'Please follow our instructions.',
+    //       msgs: test,
+    //     })
+    //   );
+    // }
   };
   const createProductHandler = async () => {
-    setLoading(true);
-    if (images) {
-      let temp = images.map((img) => {
-        return dataURItoBlob(img);
-      });
-      const path = 'product images';
-      let formData = new FormData();
-      formData.append('path', path);
-      temp.forEach((image) => {
-        formData.append('file', image);
-      });
-      uploaded_images = await uploadImages(formData);
-    }
-    if (product.color.image) {
-      let temp = dataURItoBlob(product.color.image);
-      let path = 'product style images';
-      let formData = new FormData();
-      formData.append('path', path);
-      formData.append('file', temp);
-      let cloudinary_style_img = await uploadImages(formData);
-      style_img = cloudinary_style_img[0].url;
-    }
-    try {
-      const { data } = await axios.post('/api/admin/product', {
-        ...product,
-        images: uploaded_images,
-        color: {
-          image: style_img,
-          color: product.color.color,
-        },
-      });
-      setLoading(false);
-      toast.success(data.message);
-    } catch (error) {
-      setLoading(false);
-      toast.error(error.response.data.message);
-    }
+    // setLoading(true);
+    debugger;
+    // try {
+
+    const { data } = await axios.post('/api/deposit', {
+      ...deposit,
+    });
+    setLoading(false);
+    toast.success(data.message);
+    // } catch (error) {
+    //   setLoading(false);
+    //   toast.error(error.response.data.message);
+    // }
   };
   const handleChange = (e) => {
+    debugger;
     const { value, name } = e.target;
     setDeposit({ ...deposit, [name]: value });
   };
@@ -141,37 +121,98 @@ export default function AddTopic({ country }) {
           <Header country={country} />
           <div //className={styles.header}
           >
-            Create Product
+            {/* Create Product */}
           </div>
           <Formik
             enableReinitialize
             initialValues={{
               name: deposit.name,
-              //   brand: product.brand,
-              //   description: product.description,
-              //   category: product.category,
-              //   subCategories: product.subCategories,
-              //   parent: product.parent,
-              //   sku: product.sku,
-              //   discount: product.discount,
-              //   color: product.color.color,
-              //   imageInputFile: '',
-              //   styleInout: '',
+              month: deposit.month,
+              amount: deposit.amount,
+              payment_method: deposit.payment_method,
+              transaction_id: deposit.transaction_id,
+              is_approved: deposit.is_approved,
             }}
-            validationSchema={validate}
+            // validationSchema={validate}
             onSubmit={() => {
               createProduct();
             }}
           >
             {(formik) => (
               <Form>
-                <Field type="email" name="email" placeholder="Email" />
-                <Field as="select" name="color">
-                  <option value="red">Red</option>
-                  <option value="green">Green</option>
-                  <option value="blue">Blue</option>
-                </Field>
+                <label htmlFor="name" style={{ display: 'block' }}>
+                  Name :
+                </label>
+                <select
+                  name="name"
+                  value={deposit.name}
+                  onChange={handleChange}
+                  //   onBlur={handleBlur}
+                  style={{ display: 'block', padding: '5px' }}
+                >
+                  <option value="" label="Select Name"></option>
 
+                  {members.map((member) => (
+                    <option
+                      key={member.id}
+                      value={member.name}
+                      label={member.name}
+                    >
+                      {member.name}
+                    </option>
+                  ))}
+                </select>
+                <label htmlFor="month" style={{ display: 'block' }}>
+                  Month :
+                </label>
+                <select
+                  name="month"
+                  value={deposit.month}
+                  onChange={handleChange}
+                  //   onBlur={handleBlur}
+                  style={{ display: 'block', padding: '5px' }}
+                >
+                  <option value="" label="Select Month"></option>
+
+                  {months.map((month) => (
+                    <option
+                      key={month.id}
+                      value={month.name}
+                      label={month.name}
+                    >
+                      {month.name}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor="payment_method" style={{ display: 'block' }}>
+                  Payment Method :
+                </label>
+                <select
+                  name="payment_method"
+                  value={deposit.payment_method}
+                  onChange={handleChange}
+                  //   onBlur={handleBlur}
+                  style={{ display: 'block', padding: '5px' }}
+                >
+                  <option value="" label="Select Payment Method"></option>
+
+                  {paymentMethod.map((payment) => (
+                    <option
+                      key={payment.id}
+                      value={payment.name}
+                      label={payment.name}
+                    >
+                      {payment.name}
+                    </option>
+                  ))}
+                </select>
+                <Field
+                  style={{ display: 'block' }}
+                  type="text"
+                  name="transaction_id"
+                  placeholder="Enter Transaction Id"
+                />
                 {/* <SingularSelect
                   data={tempData.memberName}
                   handleChange={handleChange}
@@ -182,16 +223,6 @@ export default function AddTopic({ country }) {
                   value={tempData.memberName[0]}
                 /> */}
 
-                {/* <SingularSelect
-                  name="category"
-                  value={'productcategory'}
-                  placeholder="Category"
-                  data={'categories'}
-                  header="Select a Category"
-                  handleChange={handleChange}
-                  disabled={true}
-                /> */}
-
                 {/* <AdminInput
                   type="text"
                   label="Name"
@@ -199,44 +230,7 @@ export default function AddTopic({ country }) {
                   placholder="Product name"
                   onChange={handleChange}
                 />
-                <AdminInput
-                  type="text"
-                  label="Description"
-                  name="description"
-                  placholder="Product description"
-                  onChange={handleChange}
-                />
-                <AdminInput
-                  type="text"
-                  label="Brand"
-                  name="brand"
-                  placholder="Product brand"
-                  onChange={handleChange}
-                />
-                <AdminInput
-                  type="text"
-                  label="Sku"
-                  name="sku"
-                  placholder="Product sku/ number"
-                  onChange={handleChange}
-                />
-                <AdminInput
-                  type="text"
-                  label="Discount"
-                  name="discount"
-                  placholder="Product discount"
-                  onChange={handleChange}
-                /> */}
-
-                {/*
-            <Images
-              name="imageDescInputFile"
-              header="Product Description Images"
-              text="Add images"
-              images={description_images}
-              setImages={setDescriptionImages}
-              setColorImage={setColorImage}
-            />
+             
            
        
           
