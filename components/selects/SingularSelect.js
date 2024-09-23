@@ -1,7 +1,6 @@
-import { MenuItem, TextField } from '@mui/material';
-import { ErrorMessage, useField } from 'formik';
-// import styles from './styles.module.scss';
-import Image from 'next/image';
+import { MenuItem, TextField } from "@mui/material";
+import { ErrorMessage, useField } from "formik";
+import styles from "./styles.module.scss";
 
 export default function SingularSelect({
   data,
@@ -9,25 +8,22 @@ export default function SingularSelect({
   placeholder,
   header,
   disabled,
-  ...props
+  ...rest
 }) {
-  const [field, meta] = useField(props);
+  console.log("Rest:", rest);
+  const [name, meta] = useField(rest);
   return (
-    <div style={{ marginBottom: '1rem' }}>
+    <div style={{ marginBottom: "1rem" }}>
       {header && (
         <div
-        //   className={`${styles.header} ${
-        //     meta.error ? styles.header__error : ''
-        //   }`}
+          className={`${styles.header} ${
+            meta.error ? styles.header__error : ""
+          }`}
         >
-          <div //className={styles.flex}
-          >
+          <div className={styles.flex}>
             {meta.error && (
-              <Image
-                src="../../../images/warning.png"
+              <img //src="../../../images/warning.png"
                 alt="warning"
-                width={100}
-                height={100}
               />
             )}
             {header}
@@ -36,17 +32,17 @@ export default function SingularSelect({
       )}
       <TextField
         variant="outlined"
-        name={field.name}
+        name={name.name}
         select
         label={placeholder}
         disabled={disabled}
-        value={field.value}
+        value={name.value}
         onChange={handleChange}
-        className={`${styles.select} ${
-          meta.touched && meta.error && styles.error__select
-        }`}
+        className={`${styles.select}
+
+        `}
       >
-        <MenuItem key={''} value={''}>
+        <MenuItem key={""} value={""}>
           No Selected / Or Empty
         </MenuItem>
         {data.map((option) => (
@@ -56,9 +52,8 @@ export default function SingularSelect({
         ))}
       </TextField>
       {meta.touched && meta.error && (
-        <p //className={styles.error__msg}
-        >
-          <ErrorMessage name={field.name} />
+        <p className={styles.error__msg}>
+          <ErrorMessage name={name.name} />
         </p>
       )}
     </div>

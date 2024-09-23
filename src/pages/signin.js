@@ -1,41 +1,41 @@
-import React, { useState } from 'react';
-import Header from '../../components/header';
-import Footer from '../../components/footer';
-import styles from '../styles/signin.module.scss';
-import { BiLeftArrowAlt } from 'react-icons/bi';
-import Link from 'next/link';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
-import LoginInput from '../../components/inputs/loginInput';
-import CircledIconBtn from '../../components/buttons/circledIconBtn';
+import React, { useState } from "react";
+import Header from "../../components/header";
+import Footer from "../../components/footer";
+import styles from "../styles/signin.module.scss";
+import { BiLeftArrowAlt } from "react-icons/bi";
+import Link from "next/link";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
+import LoginInput from "../../components/inputs/loginInput";
+import CircledIconBtn from "../../components/buttons/circledIconBtn";
 import {
   getCsrfToken,
   getProviders,
   getSession,
   signIn,
-} from 'next-auth/react';
-import Image from 'next/image';
-import axios from 'axios';
-import DotLoaderSpinner from '../../components/loaders/dotLoaders';
-import Router from 'next/router';
+} from "next-auth/react";
+import Image from "next/image";
+import axios from "axios";
+import DotLoaderSpinner from "../../components/loaders/dotLoaders";
+import Router from "next/router";
 
 export default function SignIn({ providers, csrfToken, callbackUrl }) {
   const [loading, setLoading] = useState(false);
   const initialValues = {
-    login_email: '',
-    login_password: '',
-    name: '',
-    email: '',
-    password: '',
-    confirm_password: '',
-    success: '',
-    error: '',
-    login_error: '',
+    login_email: "",
+    login_password: "",
+    name: "",
+    email: "",
+    password: "",
+    confirm_password: "",
+    success: "",
+    error: "",
+    login_error: "",
   };
   const country = {
-    name: 'Bangladesh',
-    code: 'BD',
-    flag: 'https://www.seekpng.com/png/full/270-2704243_quality-hd-good-photos-of-bangladesh-flag-bangladesh.png',
+    name: "Bangladesh",
+    code: "BD",
+    flag: "https://www.seekpng.com/png/full/270-2704243_quality-hd-good-photos-of-bangladesh-flag-bangladesh.png",
   };
   const [user, setUser] = useState(initialValues);
   const {
@@ -56,41 +56,41 @@ export default function SignIn({ providers, csrfToken, callbackUrl }) {
   // console.log(user);
   const loginValidation = Yup.object({
     login_email: Yup.string()
-      .required('Email address is required.')
-      .email('Please enter a valid email address'),
-    login_password: Yup.string().required('Please enter a password'),
+      .required("Email address is required.")
+      .email("Please enter a valid email address"),
+    login_password: Yup.string().required("Please enter a password"),
   });
 
   const registerValidation = Yup.object({
     name: Yup.string()
       .required("What's your name ?")
-      .min(2, 'First name must be between 2 and 16 characters.')
-      .max(16, 'First name must be between 2 and 16 characters.')
-      .matches(/^[aA-zZ]/, 'Numbers and special characters are not allowed.'),
+      .min(2, "First name must be between 2 and 16 characters.")
+      .max(16, "First name must be between 2 and 16 characters.")
+      .matches(/^[aA-zZ]/, "Numbers and special characters are not allowed."),
     email: Yup.string()
       .required(
         "You'll need this when you log in and if you ever need to reset your password."
       )
-      .email('Enter a valid email address.'),
+      .email("Enter a valid email address."),
     password: Yup.string()
       .required(
-        'Enter a combination of at least six numbers,letters and punctuation marks(such as ! and &).'
+        "Enter a combination of at least six numbers,letters and punctuation marks(such as ! and &)."
       )
-      .min(6, 'Password must be atleast 6 characters.')
+      .min(6, "Password must be atleast 6 characters.")
       .max(36, "Password can't be more than 36 characters"),
     confirm_password: Yup.string()
-      .required('Confirm your password.')
-      .oneOf([Yup.ref('password')], 'Passwords must match.'),
+      .required("Confirm your password.")
+      .oneOf([Yup.ref("password")], "Passwords must match."),
   });
   const signUpHandler = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.post('/api/auth/signup', {
+      const { data } = await axios.post("/api/auth/signup", {
         name,
         email,
         password,
       });
-      setUser({ ...user, error: '', success: data.message });
+      setUser({ ...user, error: "", success: data.message });
       setLoading(false);
       setTimeout(async () => {
         let options = {
@@ -98,13 +98,13 @@ export default function SignIn({ providers, csrfToken, callbackUrl }) {
           email: email,
           password: password,
         };
-        const res = await signIn('credentials', options);
-        Router.push('/');
+        const res = await signIn("credentials", options);
+        Router.push("/");
       }, 500);
     } catch (error) {
-      console.log('Api error');
+      console.log("Api error");
       setLoading(false);
-      setUser({ ...user, success: '', error: error.response.data.message });
+      setUser({ ...user, success: "", error: error.response.data.message });
     }
   };
   const signInHandler = async () => {
@@ -114,14 +114,14 @@ export default function SignIn({ providers, csrfToken, callbackUrl }) {
       email: login_email,
       password: login_password,
     };
-    const res = await signIn('credentials', options);
-    setUser({ ...user, success: '', error: '' });
+    const res = await signIn("credentials", options);
+    setUser({ ...user, success: "", error: "" });
     setLoading(false);
     if (res?.error) {
       setLoading(false);
       setUser({ ...user, login_error: res?.error });
     } else {
-      return Router.push(callbackUrl || '/');
+      return Router.push(callbackUrl || "/");
     }
   };
   return (
@@ -189,7 +189,7 @@ export default function SignIn({ providers, csrfToken, callbackUrl }) {
               <span className={styles.or}>Or Continue with</span>
               <div className={styles.login__socials_wrap}>
                 {providers.map((provider) => {
-                  if (provider.name == 'Credentials') {
+                  if (provider.name == "Credentials") {
                     return;
                   }
                   return (

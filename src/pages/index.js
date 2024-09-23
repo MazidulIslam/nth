@@ -1,10 +1,11 @@
-import styles from '../styles/Home.module.scss';
-import Header from '../../components/header';
-import Footer from '../../components/footer';
-import axios from 'axios';
-import { useSession, signIn, signOut } from 'next-auth/react';
-import TopicsList from '../../components/TopicsList';
-import Navbar from '../../components/Navbar';
+import styles from "../styles/Home.module.scss";
+import Header from "../../components/header";
+import Footer from "../../components/footer";
+import axios from "axios";
+import { useSession, signIn, signOut } from "next-auth/react";
+import TopicsList from "../../components/TopicsList";
+import Navbar from "../../components/Navbar";
+import Layout from "../../components/layout";
 
 export default function Home({ country }) {
   const { data: session } = useSession();
@@ -20,25 +21,31 @@ export default function Home({ country }) {
   return (
     <>
       {session ? (
+        // <Layout>
         <div>
           <Header country={country} />
           Signed in as {session.user.email} <br />
           <button onClick={() => signOut()}>Sign out</button>
-          <Footer country={country} />
+          {/* <Footer country={country} /> */}
         </div>
       ) : (
+        // </Layout>
+        // <Layout>
         <div>
           <Header country={country} />
           {/* <Navbar />
-          <div className={styles.home}>
-            <div className={styles.container}>
-              <TopicsList />
-            </div>
+            <div className={styles.home}>
+              <div className={styles.container}>
+                <TopicsList />
+              </div>
+            </div> */}
+          <div className="flex">
+            <h1>Not signed in</h1> <br />
+            <button onClick={() => signIn()}>Sign in</button>
           </div>
-          Not signed in <br />
-          <button onClick={() => signIn()}>Sign in</button> */}
           <Footer country={country} />
         </div>
+        // </Layout>
       )}
     </>
   );
@@ -57,9 +64,9 @@ export async function getServerSideProps() {
     props: {
       // country: { name: data.name, code: data.code, flag: data.flag.emojitwo },
       country: {
-        name: 'Bangladesh',
-        code: 'BD',
-        flag: 'https://www.seekpng.com/png/full/270-2704243_quality-hd-good-photos-of-bangladesh-flag-bangladesh.png',
+        name: "Bangladesh",
+        code: "BD",
+        flag: "https://www.seekpng.com/png/full/270-2704243_quality-hd-good-photos-of-bangladesh-flag-bangladesh.png",
       },
     },
   };
